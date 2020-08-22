@@ -10,8 +10,8 @@ describe('StormGlass client', () => {
   it('Should return the normalized forecast from the StormGlass service', async () => {
     const lat = -33.792726;
     const lng = 151.289824;
-    
-    mockedAxios.get.mockResolvedValue({ data: stormGlassWeather3HoursFixture })
+
+    mockedAxios.get.mockResolvedValue({ data: stormGlassWeather3HoursFixture });
 
     const stormGlass = new StormGlass(axios);
     const response = await stormGlass.fetchPoints(lat, lng);
@@ -32,12 +32,12 @@ describe('StormGlass client', () => {
         },
       ],
     };
-    mockedAxios.get.mockResolvedValue({ data: inCompletePoints })
+    mockedAxios.get.mockResolvedValue({ data: inCompletePoints });
 
     const stormGlass = new StormGlass(mockedAxios);
-    const response = await stormGlass.fetchPoints(lat, lng)
+    const response = await stormGlass.fetchPoints(lat, lng);
 
-    expect(response).toEqual([])
+    expect(response).toEqual([]);
   });
 
   it('Should get a generic error from StormGlass service when the request fail before reaching the service', async () => {
@@ -57,7 +57,7 @@ describe('StormGlass client', () => {
     const lat = -33.792726;
     const lng = 151.289824;
 
-    mockedAxios.get.mockRejectedValue({ 
+    mockedAxios.get.mockRejectedValue({
       response: {
         status: 429,
         data: { errors: ['Rate Limit reached'] },
@@ -70,5 +70,4 @@ describe('StormGlass client', () => {
       'Unexpected error returned by the StormGlass service: Error: {"errors":["Rate Limit reached"]} Code: 429'
     );
   });
-
 });

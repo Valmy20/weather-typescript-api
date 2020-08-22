@@ -3,7 +3,7 @@ import { InternalError } from '@src/util/errors/internal-error';
 import config, { IConfig } from 'config';
 
 export interface StormGlassPointSource {
-  [key: string]: number
+  [key: string]: number;
 }
 
 export interface StormGlassPoint {
@@ -34,34 +34,33 @@ export interface ForecastPoint {
 
 export class ClientRequestError extends InternalError {
   constructor(message: string) {
-    const internalMessage = 
-      'Unexpected error when trying to communicate to StormGlass'
-    super(`${internalMessage}: ${message}`)
+    const internalMessage =
+      'Unexpected error when trying to communicate to StormGlass';
+    super(`${internalMessage}: ${message}`);
   }
 }
 
 export class StormGlassResponseError extends InternalError {
   constructor(message: string) {
-    const internalMessage = 
-      'Unexpected error returned by the StormGlass service'
-    super(`${internalMessage}: ${message}`)
+    const internalMessage =
+      'Unexpected error returned by the StormGlass service';
+    super(`${internalMessage}: ${message}`);
   }
 }
 
 const stormGlassResourceConfig: IConfig = config.get(
   'App.resources.StormGlass'
-)
-
+);
 
 export class StormGlass {
-  readonly stormGlassAPIParams = 
-  'swellDirection,swellHeight,swellPeriod,waveDirection,waveHeight,windDirection,windSpeed';
+  readonly stormGlassAPIParams =
+    'swellDirection,swellHeight,swellPeriod,waveDirection,waveHeight,windDirection,windSpeed';
   readonly stormGlassAPISource = 'noaa';
 
   constructor(protected request: AxiosStatic) {}
-  
+
   public async fetchPoints(lat: number, lng: number): Promise<ForecastPoint[]> {
-    console.log(stormGlassResourceConfig)
+    console.log(stormGlassResourceConfig);
     try {
       const response = await this.request.get<StormGlassForecastResponse>(
         `${stormGlassResourceConfig.get(
@@ -71,19 +70,20 @@ export class StormGlass {
         }&source=${this.stormGlassAPISource}`,
         {
           headers: {
-            Authorization: stormGlassResourceConfig.get('apiToken')
-          }
+            Authorization: stormGlassResourceConfig.get('apiToken'),
+          },
         }
       );
       return this.normalizeResponse(response.data);
-    } catch(err) {
-      if(err.response && err.response.status) {
+    } catch (err) {
+      if (err.response && err.response.status) {
         throw new StormGlassResponseError(
           `Error: ${JSON.stringify(err.response.data)} Code: ${
             err.response.status
-          }`);
+          }`
+        );
       }
-      throw new ClientRequestError(err.message)
+      throw new ClientRequestError(err.message);
     }
   }
 
@@ -98,7 +98,7 @@ export class StormGlass {
       waveDirection: point.waveDirection[this.stormGlassAPISource],
       waveHeight: point.waveHeight[this.stormGlassAPISource],
       windDirection: point.windDirection[this.stormGlassAPISource],
-      windSpeed: point.windSpeed[this.stormGlassAPISource]
+      windSpeed: point.windSpeed[this.stormGlassAPISource],
     }));
   }
 
