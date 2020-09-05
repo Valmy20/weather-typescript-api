@@ -1,4 +1,9 @@
+import { Beach } from "@src/models/beach";
+
 describe('Beaches function tests', () => {
+  
+  beforeAll(async () => await Beach.deleteMany({}));
+
   describe('When creating a beach', () => {
     it('Should create a beach with success', async () => {
       const newBeach = {
